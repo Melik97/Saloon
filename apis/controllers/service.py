@@ -14,7 +14,8 @@ class ServiceView(generics.ListCreateAPIView):
         if self.request.method == 'GET':
             self.permission_classes = []
         else:
-            self.permission_classes = [IsAuthenticated, IsAdminUser]
+            self.permission_classes = []
+            # self.permission_classes = [IsAuthenticated, IsAdminUser]
 
         return super(ServiceView, self).get_permissions()
 

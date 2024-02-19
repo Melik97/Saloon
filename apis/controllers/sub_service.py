@@ -1,0 +1,40 @@
+from django.db import transaction
+from rest_framework import generics
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+from ..models import SubService
+from ..serialiazers import SubServiceSerializer
+
+
+class ServiceView(generics.ListCreateAPIView):
+    serializer_class = SubServiceSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = []
+        else:
+            self.permission_classes = []
+            # self.permission_classes = [IsAuthenticated, IsAdminUser]
+
+        return super(ServiceView, self).get_permissions()
+
+    @transaction.atomic
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return SubService.objects.all()
+
+
+class ServiceDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SubServiceSerializer
+    queryset = SubService.objects.all()
+    lookup_field = 'id'
+
+    def get_object(self):
+        service = SubService.objects.filter(id=self.kwargs[self.lookup_field])
+        obj = get_object_or_404(service)
+
+        return obj
+
